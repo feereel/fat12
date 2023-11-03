@@ -1,4 +1,5 @@
 from collections import namedtuple
+from pathlib import Path
 
 FILE = "fattask.9f81.img"
 #FILE = "disk.img"
@@ -111,17 +112,19 @@ if __name__ == "__main__":
     fat_table = get_fat_table(data, fat_addr, fat_size)     
     #print(fat_table)
     
-    sum_file = open('sum_file', 'wb')
+    
+    path = Path('.') / 'fat12'
+    path.mkdir(exist_ok=True)
+    
     for file in files_desc:
         content = read_file(data, clas_start, fat_table, clas_size, file)
         if content:
-            filename = './fat12/'
-            filename += file.name.decode().replace(' ', '').lower()
-            filename += '.'
-            filename += file.extention.decode().replace(' ', '').lower()
+            filename = file.name.decode().replace(' ', '').lower()
+            extention = file.extention.decode().replace(' ', '').lower()
+            if extention:
+                filename += '.' + extention
+            filename = path / filename
             with open(filename, 'wb') as out:
-                sum_file.write(content)
                 out.write(content)
     
-    sum_file.close()    
     disk.close()
