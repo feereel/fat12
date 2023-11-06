@@ -1,8 +1,6 @@
 from collections import namedtuple
 from pathlib import Path
-
-FILE = "fattask.9f81.img"
-#FILE = "disk.img"
+import sys
 
 Boot = namedtuple('Bootinfo', 'jmp firm byte_in_sect sect_in_clas reserv_sects fat_table_c root_files sect_in_razd disk_type sect_count hidd_sect_c')
 File = namedtuple('Files', 'name extention attr claster size')
@@ -88,7 +86,10 @@ def read_file(data, clas_start, fat_table, clas_size, file_desc):
         
 
 if __name__ == "__main__":
-    disk = open(FILE, 'rb')
+    if len(sys.argv) != 2:
+        print(r'Usage: python3 getfile.py "fattask.9f81.img"')
+        exit(0)
+    disk = open(sys.argv[1], 'rb')
     data = disk.read()
     
     boot_info = get_boot_info(data)
